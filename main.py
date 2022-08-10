@@ -18,7 +18,7 @@ if __name__ == '__main__':
         win32gui.SetWindowText(window.hwnd, "Wakfu")
         print(vars(window))  # 打印所有变量
 
-    for window in windows:`
+    for window in windows:
         win32gui.SetWindowText(window.hwnd, "沃土  WAKFU")
 
     if len(windows) == 0:
