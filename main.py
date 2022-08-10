@@ -29,14 +29,14 @@ if __name__ == '__main__':
     def setfouces():
         shell = win32com.client.Dispatch("WScript.Shell")
         while (True):
-            time.sleep(1)
+            time.sleep(2)
             i = 0
             for window in windows:
                 # 刷新点位颜色
                 try:
                     window.refreshColor()
                 except:
-                    break
+                    print("取色错误`")
                 # 判断是不是所有窗口都符合
                 if window.color == colora:
                     i = i + 1
@@ -55,8 +55,8 @@ if __name__ == '__main__':
                         shell.SendKeys('`')
                         win32gui.SetForegroundWindow(window.hwnd)
                         # 把当前窗口放到列表第一位
-                        windows.remove(window)
-                        windows.insert(0, window)
+                        # windows.remove(window)
+                        # windows.insert(0, window)
                         break
                     else:
                         print("颜色不同", window.color)
