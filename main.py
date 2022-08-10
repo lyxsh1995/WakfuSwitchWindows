@@ -42,7 +42,7 @@ if __name__ == '__main__':
                     i = i + 1
             # 符合条件窗口大于等于2个则在准备阶段,不进行操作
             if i >= 2:
-                break
+                continue
 
             for window in windows:
                 if win32gui.GetForegroundWindow() == window:
