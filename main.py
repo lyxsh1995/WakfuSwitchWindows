@@ -16,10 +16,9 @@ if __name__ == '__main__':
         window = WakfuWindowEntity.WakfuWindow(win32gui.FindWindow(None, "沃土  WAKFU"))
         windows.append(window)
         win32gui.SetWindowText(window.hwnd, "Wakfu")
-
         print(vars(window))  # 打印所有变量
 
-    for window in windows:
+    for window in windows:`
         win32gui.SetWindowText(window.hwnd, "沃土  WAKFU")
 
     if len(windows) == 0:
@@ -34,7 +33,10 @@ if __name__ == '__main__':
             i = 0
             for window in windows:
                 # 刷新点位颜色
-                window.refreshColor()
+                try:
+                    window.refreshColor()
+                except:
+                    break
                 # 判断是不是所有窗口都符合
                 if window.color == colora:
                     i = i + 1
