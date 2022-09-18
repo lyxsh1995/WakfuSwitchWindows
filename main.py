@@ -72,7 +72,7 @@ if __name__ == '__main__':
 
     def setFouces():
         """
-        当前回合按空格
+        当前回合切换
         :return:
         """
         while isRun:
@@ -121,24 +121,6 @@ if __name__ == '__main__':
 
 
     # setfouces()
-
-    # def initUI():
-    #     """
-    #     初始化UI
-    #     :return:
-    #     """
-    #     # application 对象
-    #     app = QApplication(sys.argv)
-    #     # QMainWindow对象
-    #     mainwindow = QMainWindow()
-    #     # 这是qt designer实现的Ui_MainWindow类
-    #     ui_components = Ui_MainWindow()
-    #     # 调用setupUi()方法，注册到QMainWindwo对象
-    #     ui_components.setupUi(mainwindow)
-    #     # 显示
-    #     mainwindow.show()
-    #     sys.exit(app.exec_())
-    # initUI()
 
     def Exit(icon, item):
         if str(item) == "Exit":
