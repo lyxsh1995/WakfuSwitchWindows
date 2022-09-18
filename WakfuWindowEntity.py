@@ -20,7 +20,7 @@ class WakfuWindow:
         self.h = bot - top
         self.color = win32gui.GetPixel(self.hwndDC, int(self.w / 2) - 20, self.h - 25)
         self.color2 = win32gui.GetPixel(self.hwndDC, int(self.w / 2), int(self.h / 2) + 120)
-        checked = False
+        self.checked = False
 
     def refreshColor(self):
         self.hwndDC = win32gui.GetWindowDC(self.hwnd)
@@ -29,3 +29,6 @@ class WakfuWindow:
         self.h = bot - top
         self.color = win32gui.GetPixel(self.hwndDC, int(self.w / 2) - 20, self.h - 25)
         self.color2 = win32gui.GetPixel(self.hwndDC, int(self.w / 2), int(self.h / 2) + 120)
+
+    def ischecked(self):
+        return self.checked

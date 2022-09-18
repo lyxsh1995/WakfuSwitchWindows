@@ -45,15 +45,6 @@ if __name__ == '__main__':
             print(vars(wakfuwindow))
             windows.append(wakfuwindow)
 
-    # while (win32gui.FindWindowEx(None, "Wakfu")):
-    #     window = WakfuWindowEntity.WakfuWindow(win32gui.FindWindow(None, "沃土  WAKFU"))
-    #     windows.append(window)
-    #     win32gui.SetWindowText(window.hwnd, "Wakfu")
-    #     print(vars(window))  # 打印所有变量``
-    #
-    # for window in windows:
-    #     win32gui.SetWindowText(window.hwnd, "沃土  WAKFU")
-
     if len(windows) == 0:
         print("目前没有沃土运行")
         # exit()
@@ -108,7 +99,7 @@ if __name__ == '__main__':
                     if window.color == colora or window.color2 == colorb:
                         # 通过句柄将窗口放到最前
                         print("准备置顶")
-                        shell.SendKeys('`')
+                        sendKey(window.hwnd, 0x60)
                         win32gui.SetForegroundWindow(window.hwnd)
                         break
                     else:
@@ -155,17 +146,25 @@ if __name__ == '__main__':
             isRun = False
             icon.stop()
 
+
     def on_clicked(icon, item):
         for window in windows:
             if str(item) == str(window.hwnd):
                 window.checked = not window.checked
 
+
+    def get_state(window):
+        def inner(item):
+            return window.checked
+        return inner
+
     Items = []
     for window in windows:
-        Items.append(pystray.MenuItem(str(window.hwnd), on_clicked, lambda item: window.checked))
+        Items.append(pystray.MenuItem(str(window.hwnd), on_clicked, get_state(window)))
     Items.append(pystray.MenuItem('Exit', Exit))
     menu = pystray.Menu(*Items)
-    notify = pystray.Icon("name3", Image.open("icon.png"), "沃土切换器", menu)
+
+    notify = pystray.Icon("沃土切换器", Image.open("icon.png"), "沃土切换器", menu)
 
     thread = threading.Thread(target=whileSpace)
     thread.start()
