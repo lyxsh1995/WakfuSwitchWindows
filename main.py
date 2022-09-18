@@ -2,15 +2,22 @@
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-import time
+# from mainUI import Ui_MainWindow
+# import sys
+# from PyQt6.QtWidgets import QApplication, QMainWindow
 
 import WakfuWindowEntity
+import pystray
+from PIL import Image
+import time
+import threading
 import ctypes
 import win32com.client
 import win32con
 import win32gui
 import win32api
 
+isRun = True
 windows = []
 colora = 6911105  # 底部箭头颜色
 colorb = 8356608  # 中间奖励蓝色条
@@ -30,7 +37,6 @@ current = win32api.GetCurrentThreadId()
 if __name__ == '__main__':
     window = 0
     while True:
-        #历遍所有Wakfu窗口
         window = win32gui.FindWindowEx(0, window, None, "沃土  WAKFU")
         if window == 0:
             break
@@ -50,7 +56,7 @@ if __name__ == '__main__':
 
     if len(windows) == 0:
         print("目前没有沃土运行")
-        exit()
+        # exit()
 
 
     def sendKey(hwnd, key):
@@ -78,7 +84,7 @@ if __name__ == '__main__':
         当前回合按空格
         :return:
         """
-        while (True):
+        while isRun:
             time.sleep(1)
             i = 0
             for window in windows:
@@ -102,23 +108,65 @@ if __name__ == '__main__':
                     if window.color == colora or window.color2 == colorb:
                         # 通过句柄将窗口放到最前
                         print("准备置顶")
-                        sendKey(window.hwnd, SPACE)
+                        shell.SendKeys('`')
+                        win32gui.SetForegroundWindow(window.hwnd)
                         break
                     else:
                         print("颜色不同", window.color)
                 except Exception as e:
                     print(e)
 
+
     def whileSpace():
         """
         一直按空格
         :return:
         """
-        while True:
+        while isRun:
             time.sleep(1)
             for window in windows:
-                sendKey(window.hwnd, SPACE)
+                if window.checked:
+                    sendKey(window.hwnd, SPACE)
+
 
     # setfouces()
 
-    whileSpace()
+    # def initUI():
+    #     """
+    #     初始化UI
+    #     :return:
+    #     """
+    #     # application 对象
+    #     app = QApplication(sys.argv)
+    #     # QMainWindow对象
+    #     mainwindow = QMainWindow()
+    #     # 这是qt designer实现的Ui_MainWindow类
+    #     ui_components = Ui_MainWindow()
+    #     # 调用setupUi()方法，注册到QMainWindwo对象
+    #     ui_components.setupUi(mainwindow)
+    #     # 显示
+    #     mainwindow.show()
+    #     sys.exit(app.exec_())
+    # initUI()
+
+    def Exit(icon, item):
+        if str(item) == "Exit":
+            global isRun
+            isRun = False
+            icon.stop()
+
+    def on_clicked(icon, item):
+        for window in windows:
+            if str(item) == str(window.hwnd):
+                window.checked = not window.checked
+
+    Items = []
+    for window in windows:
+        Items.append(pystray.MenuItem(str(window.hwnd), on_clicked, lambda item: window.checked))
+    Items.append(pystray.MenuItem('Exit', Exit))
+    menu = pystray.Menu(*Items)
+    notify = pystray.Icon("name3", Image.open("icon.png"), "沃土切换器", menu)
+
+    thread = threading.Thread(target=whileSpace)
+    thread.start()
+    notify.run()
