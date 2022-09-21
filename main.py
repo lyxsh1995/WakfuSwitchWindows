@@ -135,16 +135,16 @@ if __name__ == '__main__':
         icon.stop()
 
 
-    def isswitch(window):
+    def is_switch(window):
         def inner(item):
-            return window.isswitch
+            return window.is_switch
 
         return inner
 
 
-    def iswhilepass(window):
+    def is_whilepass(window):
         def inner(item):
-            return window.iswhilepass
+            return window.is_whilepass
 
         return inner
 
@@ -172,9 +172,9 @@ if __name__ == '__main__':
     for window in windows:
         Items.append(pystray.MenuItem(str(window.hwnd), pystray.Menu(
             pystray.MenuItem("切换窗口", click_switch(window),
-                             checked=isswitch(window)),
+                             checked=is_switch(window)),
             pystray.MenuItem("自动空格", click_whilepass(window),
-                             checked=iswhilepass(window))
+                             checked=is_whilepass(window))
         )))
     Items.append(pystray.MenuItem("关于", About))
     Items.append(pystray.MenuItem("退出", Exit))
