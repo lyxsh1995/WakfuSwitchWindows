@@ -6,17 +6,19 @@
 # import sys
 # from PyQt6.QtWidgets import QApplication, QMainWindow
 
-import WakfuWindowEntity
-import pystray
-from PIL import Image
-import tkinter.messagebox
-import time
-import threading
 import ctypes
+import threading
+import time
+import tkinter.messagebox
+
+import pystray
+import win32api
 import win32com.client
 import win32con
 import win32gui
-import win32api
+from PIL import Image
+
+import WakfuWindowEntity
 
 TITLE = "沃土切换器"
 isRun = True
@@ -128,10 +130,9 @@ if __name__ == '__main__':
 
 
     def Exit(icon, item):
-        if str(item) == "Exit":
-            global isRun
-            isRun = False
-            icon.stop()
+        global isRun
+        isRun = False
+        icon.stop()
 
 
     def isswitch(window):
@@ -148,24 +149,31 @@ if __name__ == '__main__':
         return inner
 
 
-    def click_switch(icon, item):
-        for window in windows:
-            if str(item) == str(window.hwnd):
-                window.isswitch = not window.isswitch
+    def click_switch(x):
+        def inner(icon, item):
+
+            for window in windows:
+                if str(x.hwnd) == str(window.hwnd):
+                    window.isswitch = not window.isswitch
+
+        return inner
 
 
-    def click_whilepass(icon, item):
-        for window in windows:
-            if str(item) == str(window.hwnd):
-                window.iswhilepass = not window.iswhilepass
+    def click_whilepass(x):
+        def inner(icon, item):
+            for window in windows:
+                if str(x.hwnd) == str(window.hwnd):
+                    window.iswhilepass = not window.iswhilepass
+
+        return inner
 
 
     Items = []
     for window in windows:
         Items.append(pystray.MenuItem(str(window.hwnd), pystray.Menu(
-            pystray.MenuItem("切换窗口", lambda icon: click_switch(pystray.Icon, window.hwnd),
+            pystray.MenuItem("切换窗口", click_switch(window),
                              checked=isswitch(window)),
-            pystray.MenuItem("自动空格", lambda icon: click_whilepass(pystray.Icon, window.hwnd),
+            pystray.MenuItem("自动空格", click_whilepass(window),
                              checked=iswhilepass(window))
         )))
     Items.append(pystray.MenuItem("关于", About))
