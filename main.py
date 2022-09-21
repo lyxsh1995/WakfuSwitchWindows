@@ -9,6 +9,7 @@
 import WakfuWindowEntity
 import pystray
 from PIL import Image
+import tkinter.messagebox
 import time
 import threading
 import ctypes
@@ -17,6 +18,7 @@ import win32con
 import win32gui
 import win32api
 
+TITLE = "沃土切换器"
 isRun = True
 windows = []
 colora = 6911105  # 底部箭头颜色
@@ -121,6 +123,10 @@ if __name__ == '__main__':
                     sendKey(window.hwnd, SPACE)
 
 
+    def About(icon, item):
+        tkinter.messagebox.showinfo(TITLE, "https://github.com/lyxsh2016/WakfuSwitchWindows\r\rby:zhuaizhuai")
+
+
     def Exit(icon, item):
         if str(item) == "Exit":
             global isRun
@@ -162,10 +168,11 @@ if __name__ == '__main__':
             pystray.MenuItem("自动空格", lambda icon: click_whilepass(pystray.Icon, window.hwnd),
                              checked=iswhilepass(window))
         )))
-    Items.append(pystray.MenuItem('Exit', Exit))
+    Items.append(pystray.MenuItem("关于", About))
+    Items.append(pystray.MenuItem("退出", Exit))
     menu = pystray.Menu(*Items)
 
-    notify = pystray.Icon("沃土切换器", Image.open("icon.png"), "沃土切换器", menu)
+    notify = pystray.Icon(TITLE, Image.open("icon.png"), TITLE, menu)
 
     thread = threading.Thread(target=switchwindows)
     thread.start()
