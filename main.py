@@ -70,7 +70,7 @@ if __name__ == '__main__':
         AttachThreadInput(current, hwnd, False)
 
 
-    def setFouces():
+    def switchwindows():
         """
         当前回合切换
         :return:
@@ -92,20 +92,21 @@ if __name__ == '__main__':
                 continue
 
             for window in windows:
-                if win32gui.GetForegroundWindow() == window:
-                    # 如果当前窗口在最前里则不进行操作
-                    break
-                try:
-                    if window.color == colora or window.color2 == colorb:
-                        # 通过句柄将窗口放到最前
-                        print("准备置顶")
-                        sendKey(window.hwnd, 0x60)
-                        win32gui.SetForegroundWindow(window.hwnd)
+                if window.isswitch:
+                    if win32gui.GetForegroundWindow() == window:
+                        # 如果当前窗口在最前里则不进行操作
                         break
-                    else:
-                        print("颜色不同", window.color)
-                except Exception as e:
-                    print(e)
+                    try:
+                        if window.color == colora or window.color2 == colorb:
+                            # 通过句柄将窗口放到最前
+                            print("准备置顶")
+                            sendKey(window.hwnd, 0x60)
+                            win32gui.SetForegroundWindow(window.hwnd)
+                            break
+                        else:
+                            print("颜色不同", window.color)
+                    except Exception as e:
+                        print(e)
 
 
     def whileSpace():
@@ -116,11 +117,9 @@ if __name__ == '__main__':
         while isRun:
             time.sleep(1)
             for window in windows:
-                if window.checked:
+                if window.iswhilepass:
                     sendKey(window.hwnd, SPACE)
 
-
-    # setfouces()
 
     def Exit(icon, item):
         if str(item) == "Exit":
@@ -129,25 +128,47 @@ if __name__ == '__main__':
             icon.stop()
 
 
-    def on_clicked(icon, item):
+    def isswitch(window):
+        def inner(item):
+            return window.isswitch
+
+        return inner
+
+
+    def iswhilepass(window):
+        def inner(item):
+            return window.iswhilepass
+
+        return inner
+
+
+    def click_switch(icon, item):
         for window in windows:
             if str(item) == str(window.hwnd):
-                window.checked = not window.checked
+                window.isswitch = not window.isswitch
 
 
-    def get_state(window):
-        def inner(item):
-            return window.checked
-        return inner
+    def click_whilepass(icon, item):
+        for window in windows:
+            if str(item) == str(window.hwnd):
+                window.iswhilepass = not window.iswhilepass
+
 
     Items = []
     for window in windows:
-        Items.append(pystray.MenuItem(str(window.hwnd), on_clicked, get_state(window)))
+        Items.append(pystray.MenuItem(str(window.hwnd), pystray.Menu(
+            pystray.MenuItem("切换窗口", lambda icon: click_switch(pystray.Icon, window.hwnd),
+                             checked=isswitch(window)),
+            pystray.MenuItem("自动空格", lambda icon: click_whilepass(pystray.Icon, window.hwnd),
+                             checked=iswhilepass(window))
+        )))
     Items.append(pystray.MenuItem('Exit', Exit))
     menu = pystray.Menu(*Items)
 
     notify = pystray.Icon("沃土切换器", Image.open("icon.png"), "沃土切换器", menu)
 
+    thread = threading.Thread(target=switchwindows)
+    thread.start()
     thread = threading.Thread(target=whileSpace)
     thread.start()
     notify.run()
