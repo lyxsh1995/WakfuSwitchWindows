@@ -45,14 +45,15 @@ if __name__ == '__main__':
         if window == 0:
             break
         else:
+            win32gui.SendMessage(window, win32con.WM_SYSCOMMAND, win32con.SC_RESTORE, 0)
+            win32gui.SetForegroundWindow(window)
             wakfuwindow = WakfuWindowEntity.WakfuWindow(window)
             print(vars(wakfuwindow))
             windows.append(wakfuwindow)
 
     if len(windows) == 0:
-        print("目前没有沃土运行")
-        # exit()
-
+        tkinter.messagebox.showerror(TITLE, "请先打开游戏再运行程序")
+        exit()
 
     def sendKey(hwnd, key):
         """
@@ -137,14 +138,14 @@ if __name__ == '__main__':
 
     def is_switch(window):
         def inner(item):
-            return window.is_switch
+            return window.isswitch
 
         return inner
 
 
     def is_whilepass(window):
         def inner(item):
-            return window.is_whilepass
+            return window.iswhilepass
 
         return inner
 
