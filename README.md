@@ -1,4 +1,4 @@
-# WakfuSwitchWindows
+# <img src="/icon.png">WakfuSwitchWindows
 Wakfu自动切换当前回合的窗口
 ## 功能
 ### 切换窗口
