@@ -40,16 +40,25 @@ current = win32api.GetCurrentThreadId()
 
 if __name__ == '__main__':
     window = 0
+    window2 = 0
     while True:
         window = win32gui.FindWindowEx(0, window, None, "沃土 WAKFU")
-        if window == 0:
-            window = win32gui.FindWindowEx(0, window, None, "WAKFU")
-            if window == 0:
-                break
-        else:
+        window2 = win32gui.FindWindowEx(0, window2, None, "WAKFU")
+
+        if window == 0 and window2 == 0:
+            break
+
+        if window != 0:
             win32gui.SendMessage(window, win32con.WM_SYSCOMMAND, win32con.SC_RESTORE, 0)
             # win32gui.SetForegroundWindow(window)
             wakfuwindow = WakfuWindowEntity.WakfuWindow(window)
+            print(vars(wakfuwindow))
+            windows.append(wakfuwindow)
+
+        if window2 != 0:
+            win32gui.SendMessage(window2, win32con.WM_SYSCOMMAND, win32con.SC_RESTORE, 0)
+            # win32gui.SetForegroundWindow(window)
+            wakfuwindow = WakfuWindowEntity.WakfuWindow(window2)
             print(vars(wakfuwindow))
             windows.append(wakfuwindow)
 
